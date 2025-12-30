@@ -171,17 +171,101 @@ class ReplicateGenerator(ImageGenerator):
         output_path.write_bytes(response.content)
 
 
-class WaveSpeedGenerator(ReplicateGenerator):
-    """Image generator using Wave Speed model via Replicate."""
+class WaveSpeedGenerator(ImageGenerator):
+    """Image generator using Wave Speed AI API."""
 
-    def __init__(self, api_token: Optional[str] = None):
+    def __init__(self, api_key: Optional[str] = None):
         """Initialize Wave Speed generator.
 
         Args:
-            api_token: Replicate API token
+            api_key: Wave Speed API key. If not provided, uses settings.
         """
-        # Wave Speed model identifier (example - replace with actual)
-        super().__init__(api_token, model="bytedance/sdxl-lightning-4step:latest")
+        self.api_key = api_key or settings.wavespeed_api_key
+        self.base_url = "https://api.wavespeed.ai/api/v3"
+
+        if not self.api_key:
+            raise ValueError("Wave Speed API key not configured")
+
+    def generate(self, prompt: str, output_path: Path) -> Path:
+        """Generate image using Wave Speed AI.
+
+        Args:
+            prompt: Image description
+            output_path: Output file path
+
+        Returns:
+            Path to generated image
+        """
+        logger.info(f"Generating image with Wave Speed AI: {prompt[:50]}...")
+
+        try:
+            import json
+
+            # Submit generation request
+            url = f"{self.base_url}/wavespeed-ai/z-image/turbo"
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {self.api_key}",
+            }
+            payload = {
+                "enable_base64_output": False,
+                "enable_sync_mode": False,
+                "output_format": "jpeg",
+                "prompt": prompt,
+                "seed": -1,
+                "size": "1024*1024",
+            }
+
+            response = requests.post(url, headers=headers, data=json.dumps(payload))
+            response.raise_for_status()
+
+            result = response.json()["data"]
+            request_id = result["id"]
+            logger.debug(f"Wave Speed task submitted. Request ID: {request_id}")
+
+            # Poll for results
+            result_url = f"{self.base_url}/predictions/{request_id}/result"
+            headers = {"Authorization": f"Bearer {self.api_key}"}
+
+            max_wait_time = 120  # 2 minutes timeout
+            start_time = time.time()
+
+            while True:
+                if time.time() - start_time > max_wait_time:
+                    raise RuntimeError("Wave Speed generation timed out after 2 minutes")
+
+                response = requests.get(result_url, headers=headers)
+                response.raise_for_status()
+
+                result = response.json()["data"]
+                status = result["status"]
+
+                if status == "completed":
+                    image_url = result["outputs"][0]
+                    logger.debug(f"Wave Speed generation completed: {image_url}")
+                    self._download_image(image_url, output_path)
+                    logger.info(f"Image saved to: {output_path}")
+                    return output_path
+
+                elif status == "failed":
+                    error = result.get("error", "Unknown error")
+                    raise RuntimeError(f"Wave Speed generation failed: {error}")
+
+                else:
+                    logger.debug(f"Wave Speed task processing. Status: {status}")
+                    time.sleep(0.5)  # Poll every 500ms
+
+        except Exception as e:
+            logger.error(f"Wave Speed generation failed: {e}")
+            raise RuntimeError(f"Wave Speed image generation failed: {e}")
+
+    def _download_image(self, url: str, output_path: Path):
+        """Download image from URL."""
+        response = requests.get(url, timeout=30)
+        response.raise_for_status()
+
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_bytes(response.content)
 
 
 def generate_images(

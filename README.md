@@ -4,22 +4,27 @@ An automated video generation pipeline that converts scripts into fully produced
 
 ## Features
 
-- **Text-to-Speech**: Custom voice generation using Inworld AI API
+- **Text-to-Speech**:
+  - Inworld AI for custom voice generation
+  - AsyncFlow TTS with word-level timestamps
 - **Subtitle Generation**: Automatic .srt file creation using OpenAI Whisper
-- **AI Scene Division**: Intelligent script segmentation with Groq API
-- **Image Generation**: Background visuals using Freepik Seedream 4 or Wave Speed zimage
-- **Video Effects**: Zoom effects and transitions with MoviePy
+- **AI Scene Division**: Intelligent script segmentation with Groq API (3s scenes)
+- **Image Generation**:
+  - Wave Speed AI (z-image turbo) for fast, high-quality images
+  - Freepik Seedream 4 for cinematic visuals
+  - Replicate API for alternative models
+- **Video Effects**: Zoom, pan, and fade transitions with MoviePy
 - **Final Assembly**: Professional video merging and subtitle burning with FFmpeg
 
 ## Workflow
 
 1. **Script Input**: Accept user script (paste or file)
-2. **TTS Generation**: Convert script to speech with Inworld AI
+2. **TTS Generation**: Convert script to speech with Inworld AI or AsyncFlow TTS
 3. **Subtitle Creation**: Generate .srt from audio using Whisper
-4. **Scene Division**: Split script into 3-second scenes with image prompts (Groq)
-5. **Image Generation**: Create background images for each scene
-6. **Video Creation**: Convert images to videos with effects (MoviePy)
-7. **Final Assembly**: Merge videos and burn subtitles (FFmpeg)
+4. **Scene Division**: Split script into 3-second scenes with detailed image prompts (Groq)
+5. **Image Generation**: Create background images using Wave Speed AI, Freepik, or Replicate
+6. **Video Creation**: Convert images to videos with cinematic effects (MoviePy)
+7. **Final Assembly**: Merge videos, add audio, and burn subtitles (FFmpeg)
 
 ## Installation
 
@@ -121,21 +126,41 @@ Shortkiins/
 
 ## API Documentation
 
-### Inworld AI
+### Text-to-Speech APIs
+
+#### Inworld AI
 - Sign up: https://studio.inworld.ai/
 - Documentation: https://docs.inworld.ai/
+- Features: Custom voice cloning, emotional control
 
-### Groq
+#### AsyncFlow TTS
+- Features: Word-level timestamps, multilingual support
+- Models: AsyncFlow V2 (English), AsyncFlow Multilingual V1
+- Returns audio with precise word timing for better subtitle sync
+
+### Scene Division
+
+#### Groq
 - Sign up: https://console.groq.com/
 - Documentation: https://console.groq.com/docs
+- Model: llama-3.3-70b-versatile for intelligent scene segmentation
 
-### Freepik
+### Image Generation APIs
+
+#### Wave Speed AI
+- Fast image generation (z-image turbo)
+- High-quality 1024x1024 output
+- Async processing with polling
+
+#### Freepik Seedream 4
 - Sign up: https://www.freepik.com/api
 - Documentation: https://www.freepik.com/api/docs
+- Cinematic style images
 
-### Replicate
+#### Replicate
 - Sign up: https://replicate.com/
 - Documentation: https://replicate.com/docs
+- Access to multiple image generation models
 
 ## Examples
 
