@@ -146,6 +146,7 @@ Examples:
                  --output output/video.mp4 \\
                  --scene-duration 5 \\
                  --image-provider wavespeed \\
+                 --aspect-ratio 9:16 \\
                  --voice-id custom_voice_123
         """,
     )
@@ -187,6 +188,13 @@ Examples:
     )
 
     parser.add_argument(
+        "--aspect-ratio",
+        choices=["16:9", "9:16"],
+        default="16:9",
+        help="Video aspect ratio: 16:9 (1280x720 landscape) or 9:16 (720x1280 portrait) (default: 16:9)",
+    )
+
+    parser.add_argument(
         "--verbose",
         action="store_true",
         help="Enable verbose logging",
@@ -197,6 +205,11 @@ Examples:
     # Configure logging level
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
+
+    # Set aspect ratio
+    settings.aspect_ratio = args.aspect_ratio
+    width, height = settings.get_dimensions()
+    logger.info(f"Using aspect ratio: {args.aspect_ratio} ({width}x{height})")
 
     # Load script
     if args.script:

@@ -86,13 +86,27 @@ python main.py --script-file input.txt
 ### Advanced Options
 
 ```bash
+# Landscape video (YouTube, standard)
 python main.py \
   --script-file input.txt \
   --output output/my_video.mp4 \
+  --aspect-ratio 16:9 \
   --scene-duration 3 \
-  --voice-id custom_voice_123 \
-  --image-model seedream4
+  --image-provider wavespeed \
+  --voice-id custom_voice_123
+
+# Portrait video (TikTok, Reels, Shorts)
+python main.py \
+  --script-file input.txt \
+  --output output/shorts.mp4 \
+  --aspect-ratio 9:16 \
+  --image-provider wavespeed
 ```
+
+### Aspect Ratios
+
+- **16:9** (1280x720) - Landscape format for YouTube, standard videos
+- **9:16** (720x1280) - Portrait format for TikTok, Instagram Reels, YouTube Shorts
 
 ## Configuration
 
@@ -123,6 +137,18 @@ Shortkiins/
 └── examples/
     └── sample_script.txt
 ```
+
+## Building a Web Interface
+
+Want to add a web UI? See **[FRONTEND.md](FRONTEND.md)** for comprehensive guide on:
+
+- **Streamlit** - Quick prototypes (recommended for beginners)
+- **Gradio** - ML demos with one-click sharing
+- **Flask** - Custom web applications
+- **FastAPI** - Production-ready APIs
+- **NiceGUI** - Desktop-like web apps
+
+Complete code examples included for each framework!
 
 ## API Documentation
 

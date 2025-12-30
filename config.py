@@ -26,8 +26,20 @@ class Settings(BaseSettings):
     # Video Settings
     scene_duration: int = Field(default=3, alias="SCENE_DURATION")
     video_fps: int = Field(default=24, alias="VIDEO_FPS")
-    video_width: int = Field(default=1920, alias="VIDEO_WIDTH")
-    video_height: int = Field(default=1080, alias="VIDEO_HEIGHT")
+    aspect_ratio: str = Field(default="16:9", alias="ASPECT_RATIO")  # "16:9" or "9:16"
+    video_width: int = Field(default=1280, alias="VIDEO_WIDTH")
+    video_height: int = Field(default=720, alias="VIDEO_HEIGHT")
+
+    def get_dimensions(self) -> tuple[int, int]:
+        """Get video dimensions based on aspect ratio.
+
+        Returns:
+            Tuple of (width, height)
+        """
+        if self.aspect_ratio == "9:16":
+            return (720, 1280)  # Portrait (TikTok, Reels, Shorts)
+        else:  # 16:9
+            return (1280, 720)  # Landscape (YouTube, standard)
 
     # Whisper Settings
     whisper_model: str = Field(default="base", alias="WHISPER_MODEL")

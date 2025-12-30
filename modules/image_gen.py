@@ -133,6 +133,9 @@ class ReplicateGenerator(ImageGenerator):
         logger.info(f"Generating image with Replicate ({self.model}): {prompt[:50]}...")
 
         try:
+            # Get dimensions based on aspect ratio
+            width, height = settings.get_dimensions()
+
             # Set API token
             replicate.Client(api_token=self.api_token)
 
@@ -141,8 +144,8 @@ class ReplicateGenerator(ImageGenerator):
                 self.model,
                 input={
                     "prompt": prompt,
-                    "width": settings.video_width,
-                    "height": settings.video_height,
+                    "width": width,
+                    "height": height,
                     "num_outputs": 1,
                 },
             )
@@ -201,6 +204,9 @@ class WaveSpeedGenerator(ImageGenerator):
         try:
             import json
 
+            # Get dimensions based on aspect ratio
+            width, height = settings.get_dimensions()
+
             # Submit generation request
             url = f"{self.base_url}/wavespeed-ai/z-image/turbo"
             headers = {
@@ -213,7 +219,7 @@ class WaveSpeedGenerator(ImageGenerator):
                 "output_format": "jpeg",
                 "prompt": prompt,
                 "seed": -1,
-                "size": "1024*1024",
+                "size": f"{width}*{height}",
             }
 
             response = requests.post(url, headers=headers, data=json.dumps(payload))
