@@ -18,7 +18,7 @@ Complete guide to deploy the AI Video Generator on your Ubuntu VPS.
 
 ```bash
 cd /var/www
-sudo git clone https://github.com/your-username/Shortkiins.git
+sudo git clone https://github.com/leksautomate/Shortkiins.git
 cd Shortkiins
 ```
 
@@ -80,7 +80,7 @@ sudo apt-get install -y nginx
 ```bash
 sudo mkdir -p /var/www
 cd /var/www
-sudo git clone https://github.com/your-username/Shortkiins.git
+sudo git clone https://github.com/leksautomate/Shortkiins.git
 cd Shortkiins
 ```
 
