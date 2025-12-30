@@ -1,0 +1,25 @@
+[Unit]
+Description=AI Video Generator API
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/Shortkiins
+Environment="PATH=/var/www/Shortkiins/venv/bin"
+ExecStart=/var/www/Shortkiins/venv/bin/uvicorn api:app --host 0.0.0.0 --port 8000 --workers 2
+Restart=always
+RestartSec=10
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=video-generator
+
+[Install]
+WantedBy=multi-user.target
